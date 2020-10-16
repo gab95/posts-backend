@@ -85,7 +85,7 @@ User.findByCredentials = async function (email, password) {
   }
 };
 
-User.hasMany(Post, { foreignKey: "userId" });
-Post.belongsTo(User, { targetKey: "id" });
+User.hasMany(Post, { foreignKey: "userId", onDelete: "cascade" });
+Post.belongsTo(User, { targetKey: "id", onDelete: "cascade" });
 
 module.exports = User;

@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: false }));
 db.authenticate()
   .then(() => {
     console.log("Connection has been established successfully.");
-    db.sync();
+    db.sync({});
   })
   .catch((err) => {
     console.error("Unable to connect to the database:", err);

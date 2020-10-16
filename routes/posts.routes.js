@@ -5,7 +5,7 @@ const postsController = require("../controllers/posts.controller");
 
 const {
   validarJWT,
-  validarMismoUsuario,
+  validarMismoUsuarioPosts,
 } = require("../middlewares/verify-jwt");
 
 router.use(validarJWT);
@@ -17,8 +17,8 @@ router
 
 router
   .route("/:postId")
-  .patch(validarMismoUsuario, postsController.editPost)
-  .delete(validarMismoUsuario, postsController.deletePost);
+  .patch(validarMismoUsuarioPosts, postsController.editPost)
+  .delete(validarMismoUsuarioPosts, postsController.deletePost);
 
 router.get("/all", postsController.getPostsFromOtherUsers);
 

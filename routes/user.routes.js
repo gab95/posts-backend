@@ -3,13 +3,17 @@ const router = express.Router();
 
 const userController = require("../controllers/user.controller");
 
-const { validarJWT, validarAdminRole } = require("../middlewares/verify-jwt");
+const {
+  validarJWT,
+  validarAdminRole,
+  validarMismoUsuarioUsers,
+} = require("../middlewares/verify-jwt");
 
 router.use([validarJWT, validarAdminRole]);
 
 router
   .route("/:userId")
   .patch(userController.updateUser)
-  .delete(userController.deleteUser);
+  .delete(validarMismoUsuarioUsers, userController.deleteUser);
 
 module.exports = router;

@@ -33,6 +33,8 @@ exports.validarAdminRole = catchAsync(async (req, res, next) => {
   const userId = req.userId;
   const user = await User.findByPk(userId);
 
+  // console.log(user);
+
   if (!user) {
     return next(new AppError("User does not exist!!!", 404));
   }
@@ -46,7 +48,7 @@ exports.validarAdminRole = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.validarMismoUsuario = catchAsync(async (req, res, next) => {
+exports.validarMismoUsuarioPosts = catchAsync(async (req, res, next) => {
   const userId = req.userId;
   const id = req.params.postId;
 
@@ -67,5 +69,24 @@ exports.validarMismoUsuario = catchAsync(async (req, res, next) => {
     return next(
       new AppError("You do not have privileges to perform this action", 403)
     );
+  }
+});
+
+exports.validarMismoUsuarioUsers = catchAsync(async (req, res, next) => {
+  const userId = req.userId;
+  const id = req.params.userId;
+
+  //check if user exist
+  const user = await User.findByPk(userId);
+
+  if (!user) {
+    return next(new AppError("No user with given id", 404));
+  }
+
+  if (user.id !== id) {
+    req.userIdForDelete = id;
+    next();
+  } else {
+    return next(new AppError("You cannot delete yourself!!!", 400));
   }
 });

@@ -1,7 +1,10 @@
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/AppError");
 
+const cloudinary = require("cloudinary").v2;
+
 const User = require("../models/user.model");
+const Post = require("../models/post.model");
 
 exports.updateUser = catchAsync(async (req, res, next) => {
   const { userId } = req.params;
@@ -32,6 +35,7 @@ exports.updateUser = catchAsync(async (req, res, next) => {
 
 exports.deleteUser = catchAsync(async (req, res, next) => {
   const { userId } = req.params;
+  const userIdForDelete = req.userIdForDelete;
 
   const user = await User.findOne({ where: { id: userId } });
 
@@ -39,14 +43,25 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
     return next(new AppError("No user with given id", 404));
   }
 
-  await User.destroy({ where: { id: userId } });
+  //delete images from cloudinary first
+  //1. get all publicId from DB
+  let postsForDelete = await Post.findAll({
+    where: { userId: userIdForDelete },
+    attributes: ["publicId"],
+  });
 
-  //todo
-  //delete all post of the user
-  //delete images from cloudinary
+  //2. map the result to get an array of publicIds from user's posts
+  postsForDelete = postsForDelete.map((post) => {
+    return post.dataValues.publicId;
+  });
+  await cloudinary.api.delete_resources(postsForDelete);
+
+  //onDelete:'cascade' in user model,
+  //3. deletes all records to the foreing key
+  await User.destroy({ where: { id: userId } });
 
   return res.status(200).json({
     status: "success",
-    msg: "User Deleted Succesfully!",
+    msg: "User Deleted Succesfully within all their posts!",
   });
 });
