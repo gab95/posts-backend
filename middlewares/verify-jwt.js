@@ -1,3 +1,5 @@
+const fs = require("fs-extra");
+
 const jwt = require("jsonwebtoken");
 
 const catchAsync = require("../utils/catchAsync");
@@ -53,9 +55,15 @@ exports.validarMismoUsuario = catchAsync(async (req, res, next) => {
     where: { id },
   });
 
+  if (!post) {
+    return next(new AppError("No post with given id", 404));
+  }
+
   if (post.userId === userId) {
+    req.post = post;
     next();
   } else {
+    await fs.unlink(req.file.path);
     return next(
       new AppError("You do not have privileges to perform this action", 403)
     );

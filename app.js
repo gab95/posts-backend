@@ -13,6 +13,7 @@ const globalErrorHandler = require("./controllers/error.controller");
 
 const authRoutes = require("./routes/auth.routes");
 const postsRoutes = require("./routes/posts.routes");
+const userRoutes = require("./routes/user.routes");
 
 const db = require("./config/database");
 
@@ -69,6 +70,7 @@ cloudinary.config({
 //app routes
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postsRoutes);
+app.use("/api/users", userRoutes);
 
 //handling routes
 app.all("*", (req, res, next) => {

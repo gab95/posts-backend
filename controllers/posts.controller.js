@@ -78,8 +78,11 @@ exports.editPost = catchAsync(async (req, res, next) => {
   const { postId } = req.params;
   const { caption } = req.body;
 
+  //comming from the request in middleware
+  const post = req.post;
+
   //delete the image post from cloudinary
-  await cloudinary.uploader.destroy(postToUpdate.publicId);
+  await cloudinary.uploader.destroy(post.publicId);
 
   //upload to cloudinary the new image
   const result = await cloudinary.uploader.upload(req.file.path, {
@@ -88,32 +91,27 @@ exports.editPost = catchAsync(async (req, res, next) => {
   await fs.unlink(req.file.path);
 
   //update db row
-  const updatedPost = await Post.update(
+  await Post.update(
     { image: result.url, caption, publicId: result.public_id },
     { where: { id: postId } }
   );
 
   return res.status(200).json({
     status: "success",
-    updatedPost,
+    msg: "Post Updated Successfully!!",
   });
 });
 
 exports.deletePost = catchAsync(async (req, res, next) => {
   const { postId } = req.params;
 
-  const post = await Post.findOne({
-    where: { id: postId, userId: req.userId },
-  });
-
-  if (!post) {
-    return next(new AppError("No post with the given id!", 404));
-  }
+  //comming from the request in middleware
+  const post = req.post;
 
   await post.destroy();
   await cloudinary.uploader.destroy(post.publicId);
 
-  return res.status(203).json({
+  return res.status(204).json({
     status: "success",
     msg: "Post deleted!",
   });

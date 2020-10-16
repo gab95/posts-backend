@@ -4,9 +4,8 @@ const Sequelize = require("sequelize");
 const db = require("../config/database");
 const Post = require("./post.model");
 
-async function hashPassword(user, options) {
-  if (!user.changed("password")) return;
-  user.password = await bcrypt.hash(user.password, 10);
+async function hashPassword(user) {
+  user.password = await bcrypt.hash(user.dataValues.password, 10);
 }
 
 const User = db.define(
