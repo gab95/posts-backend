@@ -51,9 +51,7 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
   });
 
   //2. map the result to get an array of publicIds from user's posts
-  postsForDelete = postsForDelete.map((post) => {
-    return post.dataValues.publicId;
-  });
+  postsForDelete = postsForDelete.map((post) => post.dataValues.publicId);
   await cloudinary.api.delete_resources(postsForDelete);
 
   //onDelete:'cascade' in user model,

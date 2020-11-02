@@ -5,6 +5,12 @@ const handleCastErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleDuplicateFieldsDB = (err) => {
+  const value = err.errors[0].value;
+  const message = `Duplicate field value: ${value}. Please use another value`;
+  return new AppError(message, 400);
+};
+
 const sendErrorDev = (err, req, res) => {
   if (req.originalUrl.startsWith("/api")) {
     return res.status(err.statusCode).json({
@@ -39,10 +45,17 @@ module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 
+  let error = { name: err.name, ...err };
+  error.message = err.message;
+
   if (process.env.NODE_ENV === "development") {
-    // console.log('NOMBRE ERROR MONGOOSE dev', err.name);
-    console.log(err);
-    sendErrorDev(err, req, res);
+    console.log(error);
+
+    if (error.name === "SequelizeUniqueConstraintError") {
+      error = handleDuplicateFieldsDB(error);
+    }
+
+    sendErrorDev(error, req, res);
   } else if (process.env.NODE_ENV === "production") {
     let error = { name: err.name, ...err };
     error.message = err.message;
