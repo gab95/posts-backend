@@ -9,11 +9,14 @@ const {
   validarMismoUsuarioUsers,
 } = require("../middlewares/verify-jwt");
 
-router.use([validarJWT, validarAdminRole]);
-
 router
   .route("/:userId")
-  .patch(userController.updateUser)
-  .delete(validarMismoUsuarioUsers, userController.deleteUser);
+  .get(validarJWT, userController.getUserById)
+  .patch(validarJWT, userController.updateUser)
+  .delete(
+    [validarJWT, validarAdminRole],
+    validarMismoUsuarioUsers,
+    userController.deleteUser
+  );
 
 module.exports = router;

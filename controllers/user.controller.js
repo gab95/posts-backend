@@ -6,6 +6,22 @@ const cloudinary = require("cloudinary").v2;
 const User = require("../models/user.model");
 const Post = require("../models/post.model");
 
+exports.getUserById = catchAsync(async (req, res, next) => {
+  let user = await User.findAll({
+    where: { id: req.userId },
+    attributes: ["id", "email", "name", "lastname"],
+  });
+
+  if (!user) {
+    return next(new AppError("No user with given id", 404));
+  }
+
+  return res.status(200).json({
+    status: "success",
+    user,
+  });
+});
+
 exports.updateUser = catchAsync(async (req, res, next) => {
   const { userId } = req.params;
   const { email, password, name, lastname, role } = req.body;
