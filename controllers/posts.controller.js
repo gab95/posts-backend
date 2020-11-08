@@ -55,6 +55,7 @@ exports.getPostsFromOtherUsers = catchAsync(async (req, res, next) => {
     posts,
   });
 });
+
 exports.getAllPostsByUSer = catchAsync(async (req, res, next) => {
   // const postsByUser = await Post.findAndCountAll();
   const { count, rows } = await Post.findAndCountAll({
@@ -71,6 +72,25 @@ exports.getAllPostsByUSer = catchAsync(async (req, res, next) => {
     status: "success",
     count,
     rows,
+  });
+});
+
+exports.getPostById = catchAsync(async (req, res, next) => {
+  const { postId } = req.params;
+
+  const posts = await Post.findOne({
+    where: {
+      [Op.and]: [{ id: postId }, { userId: req.userId }],
+    },
+  });
+
+  if (!posts || posts.length < 1) {
+    return next(new AppError("No posts with given id", 404));
+  }
+
+  return res.status(200).json({
+    status: "success",
+    posts,
   });
 });
 

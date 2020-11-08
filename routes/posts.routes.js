@@ -17,6 +17,7 @@ router
 
 router
   .route("/:postId")
+  .get(postsController.getPostById)
   .patch(validarMismoUsuarioPosts, postsController.editPost)
   .delete(validarMismoUsuarioPosts, postsController.deletePost);
 
