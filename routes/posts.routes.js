@@ -15,12 +15,12 @@ router
   .post(postsController.createPost)
   .get(postsController.getAllPostsByUSer);
 
+router.get("/all", postsController.getPostsFromOtherUsers);
+
 router
   .route("/:postId")
   .get(postsController.getPostById)
   .patch(validarMismoUsuarioPosts, postsController.editPost)
   .delete(validarMismoUsuarioPosts, postsController.deletePost);
-
-router.get("/all", postsController.getPostsFromOtherUsers);
 
 module.exports = router;
