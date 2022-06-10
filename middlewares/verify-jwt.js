@@ -3,7 +3,7 @@ const fs = require("fs-extra");
 const jwt = require("jsonwebtoken");
 
 const catchAsync = require("../utils/catchAsync");
-const AppError = require("../utils/AppError");
+const AppError = require("../utils/appError");
 
 const User = require("../models/user.model");
 const Post = require("../models/post.model");

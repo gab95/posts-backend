@@ -4,7 +4,7 @@ const cloudinary = require("cloudinary").v2;
 const { Op } = require("sequelize");
 
 const catchAsync = require("../utils/catchAsync");
-const AppError = require("../utils/AppError");
+const AppError = require("../utils/appError");
 
 const Post = require("../models/post.model");
 const User = require("../models/user.model");
