@@ -21,7 +21,7 @@ var cloudinary = require("cloudinary").v2;
 
 const app = express();
 
-app.use(helmet());
+// app.use(helmet());
 
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
